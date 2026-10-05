@@ -1,4 +1,5 @@
 from pydantic import validator
+from pydantic import Field  
 from typing import List, Optional, Union, Literal
 
 from sdks.novavision.src.base.model import (
@@ -96,4 +97,251 @@ class SecondExecutorInputs(Inputs):
 
 class SecondExecutorOutputs(Outputs):
     outputImage: OutputImage
-    outputImage2: OutputImage2
+    outputImage2: OutputImage2 
+
+
+#  FIRST EXECUTOR AYARLARI
+
+# --- CLAHE seçeneğinin alanları ---
+class ClipLimit(Config):
+    name: Literal["ClipLimit"] = "ClipLimit"
+    value: float = Field(ge=0.5, le=10.0)
+    type: Literal["number"] = "number"
+    field: Literal["textInput"] = "textInput"
+
+    class Config:
+        title = "Clip Limit"
+
+
+class TileSize4(Config):
+    name: Literal["TileSize4"] = "TileSize4"
+    value: Literal[4] = 4
+    type: Literal["number"] = "number"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "4x4"
+
+
+class TileSize8(Config):
+    name: Literal["TileSize8"] = "TileSize8"
+    value: Literal[8] = 8
+    type: Literal["number"] = "number"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "8x8"
+
+
+class TileSize16(Config):
+    name: Literal["TileSize16"] = "TileSize16"
+    value: Literal[16] = 16
+    type: Literal["number"] = "number"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "16x16"
+
+
+class TileSize(Config):
+    name: Literal["TileSize"] = "TileSize"
+    value: Union[TileSize4, TileSize8, TileSize16]
+    type: Literal["object"] = "object"
+    field: Literal["dropdownlist"] = "dropdownlist"
+
+    class Config:
+        title = "Tile Size"
+
+
+class OptionCLAHE(Config):
+    name: Literal["CLAHE"] = "CLAHE"
+    value: Literal["CLAHE"] = "CLAHE"
+    clipLimit: ClipLimit
+    tileSize: TileSize
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "CLAHE"
+
+
+# --- Gamma seçeneğinin alanları ---
+class GammaValue(Config):
+    name: Literal["GammaValue"] = "GammaValue"
+    value: float = Field(ge=0.1, le=5.0)
+    type: Literal["number"] = "number"
+    field: Literal["textInput"] = "textInput"
+
+    class Config:
+        title = "Gamma"
+
+
+class ChannelAll(Config):
+    name: Literal["ChannelAll"] = "ChannelAll"
+    value: Literal["All"] = "All"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "All Channels"
+
+
+class ChannelLuminance(Config):
+    name: Literal["ChannelLuminance"] = "ChannelLuminance"
+    value: Literal["Luminance"] = "Luminance"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Luminance Only"
+
+
+class Channel(Config):
+    name: Literal["Channel"] = "Channel"
+    value: Union[ChannelAll, ChannelLuminance]
+    type: Literal["object"] = "object"
+    field: Literal["dropdownlist"] = "dropdownlist"
+
+    class Config:
+        title = "Channel"
+
+
+class OptionGamma(Config):
+    name: Literal["Gamma"] = "Gamma"
+    value: Literal["Gamma"] = "Gamma"
+    gammaValue: GammaValue
+    channel: Channel
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Gamma Correction"
+
+
+# --- Ana menü ---
+class EnhanceMethod(Config):
+    name: Literal["EnhanceMethod"] = "EnhanceMethod"
+    value: Union[OptionCLAHE, OptionGamma]
+    type: Literal["object"] = "object"
+    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+
+    class Config:
+        title = "Enhance Method"
+
+
+class FirstExecutorConfigs(Configs):
+    enhanceMethod: EnhanceMethod
+
+class Threshold(Config):
+    name: Literal["Threshold"] = "Threshold"     
+    value: int = Field(ge=0, le=255)      
+    type: Literal["number"] = "number"
+    field: Literal["textInput"] = "textInput"   
+
+    class Config:
+        title = "Threshold"                 
+class MorphOpen(Config):
+    name: Literal["MorphOpen"] = "MorphOpen"     
+    value: Literal["Open"] = "Open"      
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"   
+
+    class Config:
+        title = "Morph Open"      
+
+class MorphClose(Config):
+    name: Literal["MorphClose"] = "MorphClose"     
+    value: Literal["Close"] = "Close"      
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"   
+
+    class Config:
+        title = "Morph Close"      
+
+class Morphology(Config):
+    name: Literal["Morphology"] = "Morphology"     
+    value: Union[MorphOpen, MorphClose]
+    type: Literal["object"] = "object"
+    field: Literal["dropdownlist"] = "dropdownlist"
+
+    class Config:
+        title = "Morphology"      
+
+class OptionAbsDiff(Config):
+    name: Literal["AbsDiff"] = "AbsDiff"
+    value: Literal["AbsDiff"] = "AbsDiff"
+    threshold: Threshold
+    morphology: Morphology
+    type: Literal["object"] = "object"
+    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+
+    class Config:
+        title = "Absolute Difference"
+
+class KernelSize3(Config):
+    name: Literal["KernelSize"] = "KernelSize"
+    value: Literal[3] = 3
+    type: Literal["number"] = "number"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Kernel Size3"
+
+class KernelSize5(Config):
+    name: Literal["KernelSize"] = "KernelSize"
+    value: Literal[5] = 5
+    type: Literal["number"] = "number"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Kernel Size5"
+    
+class KernelSize7(Config):
+    name: Literal["KernelSize"] = "KernelSize"
+    value: Literal[7] = 7
+    type: Literal["number"] = "number"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Kernel Size7"
+    
+class KernelSize(Config):
+    name: Literal["KernelSize"] = "KernelSize"
+    value: Union[KernelSize3, KernelSize5, KernelSize7]
+    type: Literal["object"] = "object"
+    field: Literal["dropdownlist"] = "dropdownlist"
+
+    class Config:
+        title = "Kernel Size"
+class MinArea(Config):
+    name: Literal["MinArea"] = "MinArea"
+    value: int = Field(ge=0, le=100000)
+    type: Literal["number"] = "number"
+    field: Literal["textInput"] = "textInput"
+
+    class Config:
+        title = "Min Area"
+class OptionBlurredDiff(Config):
+    name: Literal["BlurredDiff"] = "BlurredDiff"
+    value: Literal["BlurredDiff"] = "BlurredDiff"
+    kernelSize: KernelSize
+    minArea: MinArea
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Blurred Difference"
+
+
+class DetectionMethod(Config):
+    name: Literal["DetectionMethod"] = "DetectionMethod"
+    value: Union[OptionAbsDiff, OptionBlurredDiff]
+    type: Literal["object"] = "object"
+    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+
+    class Config:
+        title = "Detection Method"
+
+
+class SecondExecutorConfigs(Configs):
+    detectionMethod: DetectionMethod
