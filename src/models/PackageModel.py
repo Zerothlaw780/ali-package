@@ -345,3 +345,75 @@ class DetectionMethod(Config):
 
 class SecondExecutorConfigs(Configs):
     detectionMethod: DetectionMethod
+
+# ============ REQUEST / RESPONSE ============
+
+class FirstExecutorRequest(Request):
+    inputs: Optional[FirstExecutorInputs]
+    configs: FirstExecutorConfigs
+
+    class Config:
+        json_schema_extra = {"target": "configs"}
+
+
+class FirstExecutorResponse(Response):
+    outputs: FirstExecutorOutputs
+
+
+class SecondExecutorRequest(Request):
+    inputs: Optional[SecondExecutorInputs]
+    configs: SecondExecutorConfigs
+
+    class Config:
+        json_schema_extra = {"target": "configs"}
+
+
+class SecondExecutorResponse(Response):
+    outputs: SecondExecutorOutputs
+
+
+# ============ EXECUTOR'LAR ============
+
+class FirstExecutor(Config):
+    name: Literal["FirstExecutor"] = "FirstExecutor"
+    value: Union[FirstExecutorRequest, FirstExecutorResponse]
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Enhance Image"
+        json_schema_extra = {"target": {"value": 0}}
+
+
+class SecondExecutor(Config):
+    name: Literal["SecondExecutor"] = "SecondExecutor"
+    value: Union[SecondExecutorRequest, SecondExecutorResponse]
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Change Detection"
+        json_schema_extra = {"target": {"value": 0}}
+
+
+# ============ PAKET ============
+
+class ConfigExecutor(Config):
+    name: Literal["ConfigExecutor"] = "ConfigExecutor"
+    value: Union[FirstExecutor, SecondExecutor]
+    type: Literal["executor"] = "executor"
+    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+    restart: Literal[True] = True
+
+    class Config:
+        title = "Task"
+
+
+class PackageConfigs(Configs):
+    executor: ConfigExecutor
+
+
+class PackageModel(Package):
+    configs: PackageConfigs
+    type: Literal["component"] = "component"
+    name: Literal["AliPackage"] = "AliPackage"
