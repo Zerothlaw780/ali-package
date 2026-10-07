@@ -38,8 +38,12 @@ class FirstExecutor(Component):
             redis_db=self.redis_db
         )
 
-        gamma = self.gamma_mode.gamma.value
-        channel = self.gamma_mode.channel.value.value
+        mode = self.gamma_mode
+        if mode.name == "Brighten":
+            gamma = mode.gammaBrighten.value
+        else:
+            gamma = mode.gammaDarken.value
+        channel = mode.channel.value.value
         img.value = apply_gamma(img.value, gamma, channel)
 
         self.image = Image.set_frame(

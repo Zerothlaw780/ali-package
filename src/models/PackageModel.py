@@ -104,7 +104,7 @@ class SecondExecutorOutputs(Outputs):
 # ============ FIRST EXECUTOR CONFIGS (gamma, 1 image) ============
 
 class FirstBrightenGamma(Config):
-    name: Literal["Gamma"] = "Gamma"
+    name: Literal["GammaBrighten"] = "GammaBrighten"
     value: float = Field(ge=0.1, le=1.0)
     type: Literal["number"] = "number"
     field: Literal["textInput"] = "textInput"
@@ -145,7 +145,7 @@ class FirstBrightenChannel(Config):
 
 class FirstBrighten(Config):
     name: Literal["Brighten"] = "Brighten"
-    gamma: FirstBrightenGamma
+    gammaBrighten: FirstBrightenGamma
     channel: FirstBrightenChannel
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
@@ -154,7 +154,7 @@ class FirstBrighten(Config):
         title = "Brighten"
 
 class FirstDarkenGamma(Config):
-    name: Literal["Gamma"] = "Gamma"
+    name: Literal["GammaDarken"] = "GammaDarken"
     value: float = Field(ge=1.0, le=5.0)
     type: Literal["number"] = "number"
     field: Literal["textInput"] = "textInput"
@@ -195,7 +195,7 @@ class FirstDarkenChannel(Config):
 
 class FirstDarken(Config):
     name: Literal["Darken"] = "Darken"
-    gamma: FirstDarkenGamma
+    gammaDarken: FirstDarkenGamma
     channel: FirstDarkenChannel
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
@@ -249,7 +249,7 @@ class FirstExecutor(Config):
 # ============ SECOND EXECUTOR CONFIGS (gamma, 2 images) ============
 
 class SecondBrightenGamma(Config):
-    name: Literal["Gamma"] = "Gamma"
+    name: Literal["GammaBrighten"] = "GammaBrighten"
     value: float = Field(ge=0.1, le=1.0)
     type: Literal["number"] = "number"
     field: Literal["textInput"] = "textInput"
@@ -290,7 +290,7 @@ class SecondBrightenChannel(Config):
 
 class SecondBrighten(Config):
     name: Literal["Brighten"] = "Brighten"
-    gamma: SecondBrightenGamma
+    gammaBrighten: SecondBrightenGamma
     channel: SecondBrightenChannel
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
@@ -299,7 +299,7 @@ class SecondBrighten(Config):
         title = "Brighten"
 
 class SecondDarkenGamma(Config):
-    name: Literal["Gamma"] = "Gamma"
+    name: Literal["GammaDarken"] = "GammaDarken"
     value: float = Field(ge=1.0, le=5.0)
     type: Literal["number"] = "number"
     field: Literal["textInput"] = "textInput"
@@ -340,7 +340,7 @@ class SecondDarkenChannel(Config):
 
 class SecondDarken(Config):
     name: Literal["Darken"] = "Darken"
-    gamma: SecondDarkenGamma
+    gammaDarken: SecondDarkenGamma
     channel: SecondDarkenChannel
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"

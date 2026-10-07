@@ -43,8 +43,12 @@ class SecondExecutor(Component):
             redis_db=self.redis_db
         )
 
-        gamma = self.gamma_mode.gamma.value
-        channel = self.gamma_mode.channel.value.value
+        mode = self.gamma_mode
+        if mode.name == "Brighten":
+            gamma = mode.gammaBrighten.value
+        else:
+            gamma = mode.gammaDarken.value
+        channel = mode.channel.value.value
         img1.value = apply_gamma(img1.value, gamma, channel)
         img2.value = apply_gamma(img2.value, gamma, channel)
 
