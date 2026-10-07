@@ -1,5 +1,5 @@
 from pydantic import validator
-from pydantic import Field  
+from pydantic import Field
 from typing import List, Optional, Union, Literal
 
 from sdks.novavision.src.base.model import (
@@ -97,7 +97,7 @@ class SecondExecutorInputs(Inputs):
 
 class SecondExecutorOutputs(Outputs):
     outputImage: OutputImage
-    outputImage2: OutputImage2 
+    outputImage2: OutputImage2
 
 
 #  FIRST EXECUTOR AYARLARI
@@ -233,39 +233,39 @@ class FirstExecutorConfigs(Configs):
     enhanceMethod: EnhanceMethod
 
 class Threshold(Config):
-    name: Literal["Threshold"] = "Threshold"     
-    value: int = Field(ge=0, le=255)      
+    name: Literal["Threshold"] = "Threshold"
+    value: int = Field(ge=0, le=255)
     type: Literal["number"] = "number"
-    field: Literal["textInput"] = "textInput"   
+    field: Literal["textInput"] = "textInput"
 
     class Config:
-        title = "Threshold"                 
+        title = "Threshold"
 class MorphOpen(Config):
-    name: Literal["MorphOpen"] = "MorphOpen"     
-    value: Literal["Open"] = "Open"      
+    name: Literal["MorphOpen"] = "MorphOpen"
+    value: Literal["Open"] = "Open"
     type: Literal["string"] = "string"
-    field: Literal["option"] = "option"   
+    field: Literal["option"] = "option"
 
     class Config:
-        title = "Morph Open"      
+        title = "Morph Open"
 
 class MorphClose(Config):
-    name: Literal["MorphClose"] = "MorphClose"     
-    value: Literal["Close"] = "Close"      
+    name: Literal["MorphClose"] = "MorphClose"
+    value: Literal["Close"] = "Close"
     type: Literal["string"] = "string"
-    field: Literal["option"] = "option"   
+    field: Literal["option"] = "option"
 
     class Config:
-        title = "Morph Close"      
+        title = "Morph Close"
 
 class Morphology(Config):
-    name: Literal["Morphology"] = "Morphology"     
+    name: Literal["Morphology"] = "Morphology"
     value: Union[MorphOpen, MorphClose]
     type: Literal["object"] = "object"
     field: Literal["dropdownlist"] = "dropdownlist"
 
     class Config:
-        title = "Morphology"      
+        title = "Morphology"
 
 class OptionAbsDiff(Config):
     name: Literal["AbsDiff"] = "AbsDiff"
@@ -273,38 +273,38 @@ class OptionAbsDiff(Config):
     threshold: Threshold
     morphology: Morphology
     type: Literal["object"] = "object"
-    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+    field: Literal["option"] = "option"
 
     class Config:
         title = "Absolute Difference"
 
 class KernelSize3(Config):
-    name: Literal["KernelSize"] = "KernelSize"
+    name: Literal["KernelSize3"] = "KernelSize3"
     value: Literal[3] = 3
     type: Literal["number"] = "number"
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Kernel Size3"
+        title = "3x3"
 
 class KernelSize5(Config):
-    name: Literal["KernelSize"] = "KernelSize"
+    name: Literal["KernelSize5"] = "KernelSize5"
     value: Literal[5] = 5
     type: Literal["number"] = "number"
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Kernel Size5"
-    
+        title = "5x5"
+
 class KernelSize7(Config):
-    name: Literal["KernelSize"] = "KernelSize"
+    name: Literal["KernelSize7"] = "KernelSize7"
     value: Literal[7] = 7
     type: Literal["number"] = "number"
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Kernel Size7"
-    
+        title = "7x7"
+
 class KernelSize(Config):
     name: Literal["KernelSize"] = "KernelSize"
     value: Union[KernelSize3, KernelSize5, KernelSize7]

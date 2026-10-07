@@ -50,6 +50,12 @@ def _draw_changes(mask, after, min_area):
     return boxed
 
 
+def _make_heatmap(diff):
+    """Farkı 0-255 aralığına yayıp renklendirir: mavi=aynı, kırmızı=en çok değişen."""
+    diff_norm = cv2.normalize(diff, None, 0, 255, cv2.NORM_MINMAX)
+    return cv2.applyColorMap(diff_norm, cv2.COLORMAP_JET)
+
+
 def change_absdiff(before, after, threshold=30, morphology="Open"):
     """Piksel piksel fark alır, eşikten büyük farkları 'değişim' sayar."""
     after, g1, g2 = _prepare_pair(before, after)
@@ -58,8 +64,7 @@ def change_absdiff(before, after, threshold=30, morphology="Open"):
     kernel = np.ones((5, 5), np.uint8)
     op = cv2.MORPH_OPEN if morphology == "Open" else cv2.MORPH_CLOSE
     mask = cv2.morphologyEx(mask, op, kernel)
-    heatmap = cv2.applyColorMap(diff, cv2.COLORMAP_JET)   # fark haritası: mavi=aynı, kırmızı=çok farklı
-    return heatmap, _draw_changes(mask, after, min_area=50)
+    return _make_heatmap(diff), _draw_changes(mask, after, min_area=50)
 
 
 def change_blurred(before, after, kernel_size=5, min_area=500):
@@ -72,5 +77,4 @@ def change_blurred(before, after, kernel_size=5, min_area=500):
     diff = cv2.absdiff(g1, g2)
     _, mask = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     mask = cv2.dilate(mask, np.ones((3, 3), np.uint8), iterations=2)
-    heatmap = cv2.applyColorMap(diff, cv2.COLORMAP_JET)
-    return heatmap, _draw_changes(mask, after, int(min_area))
+    return _make_heatmap(diff), _draw_changes(mask, after, int(min_area))
