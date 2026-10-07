@@ -1,43 +1,31 @@
+"""Local test for the gamma logic (no NovaVision SDK needed).
+
+Run from the repo root:  python tests/test_local.py
+Results are written to tests/output/.
+"""
 import os
 import sys
+
 import cv2
-import numpy as np
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from src.utils.image_ops import enhance_clahe, enhance_gamma, change_absdiff, change_blurred
+ROOT = os.path.join(os.path.dirname(__file__), "..")
+sys.path.insert(0, os.path.join(ROOT, "src", "utils"))
+from image_ops import apply_gamma  # noqa: E402
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "output")
-IMG = os.path.join(HERE, "..", "images")
+IMG = os.path.join(ROOT, "images")
+OUT = os.path.join(os.path.dirname(__file__), "output")
 os.makedirs(OUT, exist_ok=True)
 
+img = cv2.imread(os.path.join(IMG, "dark.jpg"))
+if img is None:
+    raise SystemExit("images/dark.jpg not found")
 
-def load_or_make():
-    before = cv2.imread(os.path.join(IMG, "before.jpg"))
-    after = cv2.imread(os.path.join(IMG, "after.jpg"))
-    if before is not None and after is not None:
-        return before, after
-    print("images/before.jpg ve after.jpg yok, sentetik görüntü kullanılıyor")
-    before = np.full((400, 600, 3), 90, np.uint8)
-    cv2.rectangle(before, (50, 50), (150, 150), (200, 200, 200), -1)
-    after = before.copy()
-    cv2.rectangle(after, (350, 200), (450, 300), (40, 180, 40), -1)   # yeni nesne
-    return before, after
-
-
-before, after = load_or_make()
-dark = (before * 0.3).astype(np.uint8)        # enhance testi için karartılmış görüntü
-
-cv2.imwrite(f"{OUT}/1_dark_input.jpg", dark)
-cv2.imwrite(f"{OUT}/2_clahe.jpg", enhance_clahe(dark, 3.0, 8))
-cv2.imwrite(f"{OUT}/3_gamma.jpg", enhance_gamma(dark, 2.2, "Luminance"))
-
-heat, boxed = change_absdiff(before, after, 30, "Open")
-cv2.imwrite(f"{OUT}/4_absdiff_heatmap.jpg", heat)
-cv2.imwrite(f"{OUT}/5_absdiff_boxes.jpg", boxed)
-
-heat, boxed = change_blurred(before, after, 5, 500)
-cv2.imwrite(f"{OUT}/6_blurred_heatmap.jpg", heat)
-cv2.imwrite(f"{OUT}/7_blurred_boxes.jpg", boxed)
-
-print("Bitti! Çıktılar:", OUT)
+cases = {
+    "1_input.jpg": img,
+    "2_brighten_0.5_all.jpg": apply_gamma(img, 0.5, "All"),
+    "3_brighten_0.5_luminance.jpg": apply_gamma(img, 0.5, "Luminance"),
+    "4_darken_2.0_all.jpg": apply_gamma(img, 2.0, "All"),
+}
+for name, out in cases.items():
+    cv2.imwrite(os.path.join(OUT, name), out)
+    print(f"{name}: mean brightness = {out.mean():.1f}")

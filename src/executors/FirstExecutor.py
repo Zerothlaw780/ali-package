@@ -8,7 +8,7 @@ from sdks.novavision.src.base.component import Component
 from sdks.novavision.src.helper.executor import Executor
 from components.AliPackage.src.utils.response import build_response
 from components.AliPackage.src.models.PackageModel import PackageModel
-from components.AliPackage.src.utils.image_ops import enhance_clahe, enhance_gamma
+from components.AliPackage.src.utils.image_ops import apply_gamma
 
 
 class FirstExecutor(Component):
@@ -17,14 +17,14 @@ class FirstExecutor(Component):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
         self.image = self.request.get_param("inputImage")
-        self.method = (
+        self.gamma_mode = (
             self.request.model
             .configs
             .executor
             .value
             .value
             .configs
-            .enhanceMethod
+            .gammaMode
             .value
         )
 
@@ -38,19 +38,9 @@ class FirstExecutor(Component):
             redis_db=self.redis_db
         )
 
-        m = self.method
-        if m.name == "CLAHE":
-            img.value = enhance_clahe(
-                img.value,
-                clip_limit=m.clipLimit.value,
-                tile_size=m.tileSize.value.value
-            )
-        else:
-            img.value = enhance_gamma(
-                img.value,
-                gamma=m.gammaValue.value,
-                channel=m.channel.value.value
-            )
+        gamma = self.gamma_mode.gamma.value
+        channel = self.gamma_mode.channel.value.value
+        img.value = apply_gamma(img.value, gamma, channel)
 
         self.image = Image.set_frame(
             img=img,

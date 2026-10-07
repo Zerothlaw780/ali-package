@@ -11,11 +11,16 @@ from components.AliPackage.src.models.PackageModel import (
     SecondExecutorResponse,
     SecondExecutor,
     OutputImage,
-    OutputImage2
+    SecondOutputImage
 )
 
 
-def _build(executor, context):
+def build_executor1_response(context):
+    output = OutputImage(value=context.image)
+    outputs = FirstExecutorOutputs(outputImage=output)
+    response = FirstExecutorResponse(outputs=outputs)
+
+    executor = FirstExecutor(value=response)
     config_executor = ConfigExecutor(value=executor)
     package_configs = PackageConfigs(executor=config_executor)
 
@@ -23,27 +28,35 @@ def _build(executor, context):
         packageModel=PackageModel,
         packageConfigs=package_configs
     )
+
     return package.build_model(context)
 
 
-def build_executor1_response(context):
-    outputs = FirstExecutorOutputs(
-        outputImage=OutputImage(value=context.image)
-    )
-    response = FirstExecutorResponse(outputs=outputs)
-    return _build(FirstExecutor(value=response), context)
-
-
 def build_executor2_response(context):
+    output1 = OutputImage(value=context.image1)
+    output2 = SecondOutputImage(value=context.image2)
+
     outputs = SecondExecutorOutputs(
-        outputImage=OutputImage(value=context.image1),
-        outputImage2=OutputImage2(value=context.image2)
+        outputImage=output1,
+        outputImage2=output2
     )
+
     response = SecondExecutorResponse(outputs=outputs)
-    return _build(SecondExecutor(value=response), context)
+
+    executor = SecondExecutor(value=response)
+    config_executor = ConfigExecutor(value=executor)
+    package_configs = PackageConfigs(executor=config_executor)
+
+    package = PackageHelper(
+        packageModel=PackageModel,
+        packageConfigs=package_configs
+    )
+
+    return package.build_model(context)
 
 
 def build_response(context):
     if hasattr(context, "image2"):
         return build_executor2_response(context)
+
     return build_executor1_response(context)

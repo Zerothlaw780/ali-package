@@ -8,7 +8,7 @@ from sdks.novavision.src.base.component import Component
 from sdks.novavision.src.helper.executor import Executor
 from components.AliPackage.src.utils.response import build_response
 from components.AliPackage.src.models.PackageModel import PackageModel
-from components.AliPackage.src.utils.image_ops import change_absdiff, change_blurred
+from components.AliPackage.src.utils.image_ops import apply_gamma
 
 
 class SecondExecutor(Component):
@@ -18,14 +18,14 @@ class SecondExecutor(Component):
         self.request.model = PackageModel(**(self.request.data))
         self.image1 = self.request.get_param("inputImage")
         self.image2 = self.request.get_param("inputImage2")
-        self.method = (
+        self.gamma_mode = (
             self.request.model
             .configs
             .executor
             .value
             .value
             .configs
-            .detectionMethod
+            .gammaMode
             .value
         )
 
@@ -43,24 +43,10 @@ class SecondExecutor(Component):
             redis_db=self.redis_db
         )
 
-        m = self.method
-        if m.name == "AbsDiff":
-            heatmap, boxed = change_absdiff(
-                img1.value,
-                img2.value,
-                threshold=m.threshold.value,
-                morphology=m.morphology.value.value
-            )
-        else:
-            heatmap, boxed = change_blurred(
-                img1.value,
-                img2.value,
-                kernel_size=m.kernelSize.value.value,
-                min_area=m.minArea.value
-            )
-
-        img1.value = heatmap
-        img2.value = boxed
+        gamma = self.gamma_mode.gamma.value
+        channel = self.gamma_mode.channel.value.value
+        img1.value = apply_gamma(img1.value, gamma, channel)
+        img2.value = apply_gamma(img2.value, gamma, channel)
 
         self.image1 = Image.set_frame(
             img=img1,

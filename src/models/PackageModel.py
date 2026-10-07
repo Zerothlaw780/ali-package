@@ -1,14 +1,22 @@
-from pydantic import validator
-from pydantic import Field
+from pydantic import Field, validator
+
 from typing import List, Optional, Union, Literal
 
 from sdks.novavision.src.base.model import (
-    Package, Image, Inputs, Configs, Outputs,
-    Response, Request, Output, Input, Config
+    Package,
+    Image,
+    Inputs,
+    Configs,
+    Outputs,
+    Response,
+    Request,
+    Output,
+    Input,
+    Config
 )
 
 
-# ---------- GİRDİLER ----------
+# ============ INPUTS / OUTPUTS ============
 
 class InputImage(Input):
     name: Literal["inputImage"] = "inputImage"
@@ -26,8 +34,7 @@ class InputImage(Input):
     class Config:
         title = "Image"
 
-
-class InputImage2(Input):
+class SecondInputImage(Input):
     name: Literal["inputImage2"] = "inputImage2"
     value: Union[List[Image], Image]
     type: str = "object"
@@ -41,10 +48,7 @@ class InputImage2(Input):
             return "list"
 
     class Config:
-        title = "After Image"
-
-
-# ---------- ÇIKTILAR ----------
+        title = "Image 2"
 
 class OutputImage(Output):
     name: Literal["outputImage"] = "outputImage"
@@ -62,8 +66,7 @@ class OutputImage(Output):
     class Config:
         title = "Image"
 
-
-class OutputImage2(Output):
+class SecondOutputImage(Output):
     name: Literal["outputImage2"] = "outputImage2"
     value: Union[List[Image], Image]
     type: str = "object"
@@ -77,10 +80,8 @@ class OutputImage2(Output):
             return "list"
 
     class Config:
-        title = "Detected Changes"
+        title = "Image 2"
 
-
-# ---------- EXECUTOR'LARA GÖRE GRUPLAMA ----------
 
 class FirstExecutorInputs(Inputs):
     inputImage: InputImage
@@ -92,92 +93,28 @@ class FirstExecutorOutputs(Outputs):
 
 class SecondExecutorInputs(Inputs):
     inputImage: InputImage
-    inputImage2: InputImage2
+    inputImage2: SecondInputImage
 
 
 class SecondExecutorOutputs(Outputs):
     outputImage: OutputImage
-    outputImage2: OutputImage2
+    outputImage2: SecondOutputImage
 
 
-#  FIRST EXECUTOR AYARLARI
+# ============ FIRST EXECUTOR CONFIGS (gamma, 1 image) ============
 
-# --- CLAHE seçeneğinin alanları ---
-class ClipLimit(Config):
-    name: Literal["ClipLimit"] = "ClipLimit"
-    value: float = Field(ge=0.5, le=10.0)
+class FirstBrightenGamma(Config):
+    name: Literal["Gamma"] = "Gamma"
+    value: float = Field(ge=0.1, le=1.0)
     type: Literal["number"] = "number"
     field: Literal["textInput"] = "textInput"
 
     class Config:
-        title = "Clip Limit"
+        title = "Gamma (0.1 - 1.0)"
 
 
-class TileSize4(Config):
-    name: Literal["TileSize4"] = "TileSize4"
-    value: Literal[4] = 4
-    type: Literal["number"] = "number"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "4x4"
-
-
-class TileSize8(Config):
-    name: Literal["TileSize8"] = "TileSize8"
-    value: Literal[8] = 8
-    type: Literal["number"] = "number"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "8x8"
-
-
-class TileSize16(Config):
-    name: Literal["TileSize16"] = "TileSize16"
-    value: Literal[16] = 16
-    type: Literal["number"] = "number"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "16x16"
-
-
-class TileSize(Config):
-    name: Literal["TileSize"] = "TileSize"
-    value: Union[TileSize4, TileSize8, TileSize16]
-    type: Literal["object"] = "object"
-    field: Literal["dropdownlist"] = "dropdownlist"
-
-    class Config:
-        title = "Tile Size"
-
-
-class OptionCLAHE(Config):
-    name: Literal["CLAHE"] = "CLAHE"
-    value: Literal["CLAHE"] = "CLAHE"
-    clipLimit: ClipLimit
-    tileSize: TileSize
-    type: Literal["object"] = "object"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "CLAHE"
-
-
-# --- Gamma seçeneğinin alanları ---
-class GammaValue(Config):
-    name: Literal["GammaValue"] = "GammaValue"
-    value: float = Field(ge=0.1, le=5.0)
-    type: Literal["number"] = "number"
-    field: Literal["textInput"] = "textInput"
-
-    class Config:
-        title = "Gamma"
-
-
-class ChannelAll(Config):
-    name: Literal["ChannelAll"] = "ChannelAll"
+class FirstBrightenChannelAll(Config):
+    name: Literal["All"] = "All"
     value: Literal["All"] = "All"
     type: Literal["string"] = "string"
     field: Literal["option"] = "option"
@@ -186,8 +123,8 @@ class ChannelAll(Config):
         title = "All Channels"
 
 
-class ChannelLuminance(Config):
-    name: Literal["ChannelLuminance"] = "ChannelLuminance"
+class FirstBrightenChannelLuminance(Config):
+    name: Literal["Luminance"] = "Luminance"
     value: Literal["Luminance"] = "Luminance"
     type: Literal["string"] = "string"
     field: Literal["option"] = "option"
@@ -196,9 +133,9 @@ class ChannelLuminance(Config):
         title = "Luminance Only"
 
 
-class Channel(Config):
+class FirstBrightenChannel(Config):
     name: Literal["Channel"] = "Channel"
-    value: Union[ChannelAll, ChannelLuminance]
+    value: Union[FirstBrightenChannelAll, FirstBrightenChannelLuminance]
     type: Literal["object"] = "object"
     field: Literal["dropdownlist"] = "dropdownlist"
 
@@ -206,173 +143,93 @@ class Channel(Config):
         title = "Channel"
 
 
-class OptionGamma(Config):
-    name: Literal["Gamma"] = "Gamma"
-    value: Literal["Gamma"] = "Gamma"
-    gammaValue: GammaValue
-    channel: Channel
+class FirstBrighten(Config):
+    name: Literal["Brighten"] = "Brighten"
+    gamma: FirstBrightenGamma
+    channel: FirstBrightenChannel
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Gamma Correction"
+        title = "Brighten"
+
+class FirstDarkenGamma(Config):
+    name: Literal["Gamma"] = "Gamma"
+    value: float = Field(ge=1.0, le=5.0)
+    type: Literal["number"] = "number"
+    field: Literal["textInput"] = "textInput"
+
+    class Config:
+        title = "Gamma (1.0 - 5.0)"
 
 
-# --- Ana menü ---
-class EnhanceMethod(Config):
-    name: Literal["EnhanceMethod"] = "EnhanceMethod"
-    value: Union[OptionCLAHE, OptionGamma]
+class FirstDarkenChannelAll(Config):
+    name: Literal["All"] = "All"
+    value: Literal["All"] = "All"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "All Channels"
+
+
+class FirstDarkenChannelLuminance(Config):
+    name: Literal["Luminance"] = "Luminance"
+    value: Literal["Luminance"] = "Luminance"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Luminance Only"
+
+
+class FirstDarkenChannel(Config):
+    name: Literal["Channel"] = "Channel"
+    value: Union[FirstDarkenChannelAll, FirstDarkenChannelLuminance]
+    type: Literal["object"] = "object"
+    field: Literal["dropdownlist"] = "dropdownlist"
+
+    class Config:
+        title = "Channel"
+
+
+class FirstDarken(Config):
+    name: Literal["Darken"] = "Darken"
+    gamma: FirstDarkenGamma
+    channel: FirstDarkenChannel
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Darken"
+
+class FirstExecutorGammaMode(Config):
+    name: Literal["GammaMode"] = "GammaMode"
+    value: Union[FirstBrighten, FirstDarken]
     type: Literal["object"] = "object"
     field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
 
     class Config:
-        title = "Enhance Method"
+        title = "Gamma Mode"
 
 
 class FirstExecutorConfigs(Configs):
-    enhanceMethod: EnhanceMethod
+    gammaMode: FirstExecutorGammaMode
 
-class Threshold(Config):
-    name: Literal["Threshold"] = "Threshold"
-    value: int = Field(ge=0, le=255)
-    type: Literal["number"] = "number"
-    field: Literal["textInput"] = "textInput"
-
-    class Config:
-        title = "Threshold"
-class MorphOpen(Config):
-    name: Literal["MorphOpen"] = "MorphOpen"
-    value: Literal["Open"] = "Open"
-    type: Literal["string"] = "string"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "Morph Open"
-
-class MorphClose(Config):
-    name: Literal["MorphClose"] = "MorphClose"
-    value: Literal["Close"] = "Close"
-    type: Literal["string"] = "string"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "Morph Close"
-
-class Morphology(Config):
-    name: Literal["Morphology"] = "Morphology"
-    value: Union[MorphOpen, MorphClose]
-    type: Literal["object"] = "object"
-    field: Literal["dropdownlist"] = "dropdownlist"
-
-    class Config:
-        title = "Morphology"
-
-class OptionAbsDiff(Config):
-    name: Literal["AbsDiff"] = "AbsDiff"
-    value: Literal["AbsDiff"] = "AbsDiff"
-    threshold: Threshold
-    morphology: Morphology
-    type: Literal["object"] = "object"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "Absolute Difference"
-
-class KernelSize3(Config):
-    name: Literal["KernelSize3"] = "KernelSize3"
-    value: Literal[3] = 3
-    type: Literal["number"] = "number"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "3x3"
-
-class KernelSize5(Config):
-    name: Literal["KernelSize5"] = "KernelSize5"
-    value: Literal[5] = 5
-    type: Literal["number"] = "number"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "5x5"
-
-class KernelSize7(Config):
-    name: Literal["KernelSize7"] = "KernelSize7"
-    value: Literal[7] = 7
-    type: Literal["number"] = "number"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "7x7"
-
-class KernelSize(Config):
-    name: Literal["KernelSize"] = "KernelSize"
-    value: Union[KernelSize3, KernelSize5, KernelSize7]
-    type: Literal["object"] = "object"
-    field: Literal["dropdownlist"] = "dropdownlist"
-
-    class Config:
-        title = "Kernel Size"
-class MinArea(Config):
-    name: Literal["MinArea"] = "MinArea"
-    value: int = Field(ge=0, le=100000)
-    type: Literal["number"] = "number"
-    field: Literal["textInput"] = "textInput"
-
-    class Config:
-        title = "Min Area"
-class OptionBlurredDiff(Config):
-    name: Literal["BlurredDiff"] = "BlurredDiff"
-    value: Literal["BlurredDiff"] = "BlurredDiff"
-    kernelSize: KernelSize
-    minArea: MinArea
-    type: Literal["object"] = "object"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "Blurred Difference"
-
-
-class DetectionMethod(Config):
-    name: Literal["DetectionMethod"] = "DetectionMethod"
-    value: Union[OptionAbsDiff, OptionBlurredDiff]
-    type: Literal["object"] = "object"
-    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
-
-    class Config:
-        title = "Detection Method"
-
-
-class SecondExecutorConfigs(Configs):
-    detectionMethod: DetectionMethod
-
-# ============ REQUEST / RESPONSE ============
 
 class FirstExecutorRequest(Request):
     inputs: Optional[FirstExecutorInputs]
     configs: FirstExecutorConfigs
 
     class Config:
-        json_schema_extra = {"target": "configs"}
+        json_schema_extra = {
+            "target": "configs"
+        }
 
 
 class FirstExecutorResponse(Response):
     outputs: FirstExecutorOutputs
 
-
-class SecondExecutorRequest(Request):
-    inputs: Optional[SecondExecutorInputs]
-    configs: SecondExecutorConfigs
-
-    class Config:
-        json_schema_extra = {"target": "configs"}
-
-
-class SecondExecutorResponse(Response):
-    outputs: SecondExecutorOutputs
-
-
-# ============ EXECUTOR'LAR ============
 
 class FirstExecutor(Config):
     name: Literal["FirstExecutor"] = "FirstExecutor"
@@ -381,8 +238,142 @@ class FirstExecutor(Config):
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Enhance Image"
-        json_schema_extra = {"target": {"value": 0}}
+        title = "Gamma Correction (1 Image)"
+        json_schema_extra = {
+            "target": {
+                "value": 0
+            }
+        }
+
+
+# ============ SECOND EXECUTOR CONFIGS (gamma, 2 images) ============
+
+class SecondBrightenGamma(Config):
+    name: Literal["Gamma"] = "Gamma"
+    value: float = Field(ge=0.1, le=1.0)
+    type: Literal["number"] = "number"
+    field: Literal["textInput"] = "textInput"
+
+    class Config:
+        title = "Gamma (0.1 - 1.0)"
+
+
+class SecondBrightenChannelAll(Config):
+    name: Literal["All"] = "All"
+    value: Literal["All"] = "All"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "All Channels"
+
+
+class SecondBrightenChannelLuminance(Config):
+    name: Literal["Luminance"] = "Luminance"
+    value: Literal["Luminance"] = "Luminance"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Luminance Only"
+
+
+class SecondBrightenChannel(Config):
+    name: Literal["Channel"] = "Channel"
+    value: Union[SecondBrightenChannelAll, SecondBrightenChannelLuminance]
+    type: Literal["object"] = "object"
+    field: Literal["dropdownlist"] = "dropdownlist"
+
+    class Config:
+        title = "Channel"
+
+
+class SecondBrighten(Config):
+    name: Literal["Brighten"] = "Brighten"
+    gamma: SecondBrightenGamma
+    channel: SecondBrightenChannel
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Brighten"
+
+class SecondDarkenGamma(Config):
+    name: Literal["Gamma"] = "Gamma"
+    value: float = Field(ge=1.0, le=5.0)
+    type: Literal["number"] = "number"
+    field: Literal["textInput"] = "textInput"
+
+    class Config:
+        title = "Gamma (1.0 - 5.0)"
+
+
+class SecondDarkenChannelAll(Config):
+    name: Literal["All"] = "All"
+    value: Literal["All"] = "All"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "All Channels"
+
+
+class SecondDarkenChannelLuminance(Config):
+    name: Literal["Luminance"] = "Luminance"
+    value: Literal["Luminance"] = "Luminance"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Luminance Only"
+
+
+class SecondDarkenChannel(Config):
+    name: Literal["Channel"] = "Channel"
+    value: Union[SecondDarkenChannelAll, SecondDarkenChannelLuminance]
+    type: Literal["object"] = "object"
+    field: Literal["dropdownlist"] = "dropdownlist"
+
+    class Config:
+        title = "Channel"
+
+
+class SecondDarken(Config):
+    name: Literal["Darken"] = "Darken"
+    gamma: SecondDarkenGamma
+    channel: SecondDarkenChannel
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Darken"
+
+class SecondExecutorGammaMode(Config):
+    name: Literal["GammaMode"] = "GammaMode"
+    value: Union[SecondBrighten, SecondDarken]
+    type: Literal["object"] = "object"
+    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+
+    class Config:
+        title = "Gamma Mode"
+
+
+class SecondExecutorConfigs(Configs):
+    gammaMode: SecondExecutorGammaMode
+
+
+class SecondExecutorRequest(Request):
+    inputs: Optional[SecondExecutorInputs]
+    configs: SecondExecutorConfigs
+
+    class Config:
+        json_schema_extra = {
+            "target": "configs"
+        }
+
+
+class SecondExecutorResponse(Response):
+    outputs: SecondExecutorOutputs
 
 
 class SecondExecutor(Config):
@@ -392,11 +383,15 @@ class SecondExecutor(Config):
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Change Detection"
-        json_schema_extra = {"target": {"value": 0}}
+        title = "Gamma Correction (2 Images)"
+        json_schema_extra = {
+            "target": {
+                "value": 0
+            }
+        }
 
 
-# ============ PAKET ============
+# ============ PACKAGE ============
 
 class ConfigExecutor(Config):
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
