@@ -1,4 +1,4 @@
-# AliPackage
+# demoPackageAli
 
 > Applies gamma correction to one or two images.
 
@@ -8,7 +8,7 @@
 
 ## 1. Overview
 
-AliPackage is a NovaVision **component** package with two executors:
+demoPackageAli is a NovaVision **component** package with two executors:
 
 1. **Gamma Correction (1 Image)** — `FirstExecutor`
 2. **Gamma Correction (2 Images)** — `SecondExecutor` (applies the same setting to both images)

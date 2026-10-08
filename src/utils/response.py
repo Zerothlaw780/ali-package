@@ -1,6 +1,6 @@
 from sdks.novavision.src.helper.package import PackageHelper
 
-from components.AliPackage.src.models.PackageModel import (
+from components.demoPackageAli.src.models.PackageModel import (
     PackageModel,
     PackageConfigs,
     ConfigExecutor,

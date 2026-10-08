@@ -6,9 +6,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../../../'))
 from sdks.novavision.src.media.image import Image
 from sdks.novavision.src.base.component import Component
 from sdks.novavision.src.helper.executor import Executor
-from components.AliPackage.src.utils.response import build_response
-from components.AliPackage.src.models.PackageModel import PackageModel
-from components.AliPackage.src.utils.image_ops import apply_gamma
+from components.demoPackageAli.src.utils.response import build_response
+from components.demoPackageAli.src.models.PackageModel import PackageModel
+from components.demoPackageAli.src.utils.image_ops import apply_gamma
 
 
 class SecondExecutor(Component):
