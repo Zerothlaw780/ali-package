@@ -47,8 +47,8 @@ Both executors have the same configuration.
 | Parameter | Type | Field Type (UI control) | Allowed Values / Range | Description |
 |---|---|---|---|---|
 | `GammaMode` | object | `dependentDropdownlist` | Brighten / Darken | Selects the mode; the fields below change with it |
-| `Gamma` (Brighten) | number | `textInput` | 0.1 – 1.0 | Smaller value = brighter image |
-| `Gamma` (Darken) | number | `textInput` | 1.0 – 5.0 | Larger value = darker image |
+| `GammaBrighten` | number | `textInput` | 0.1 – 1.0 | Smaller value = brighter image |
+| `GammaDarken` | number | `textInput` | 1.0 – 5.0 | Larger value = darker image |
 | `Channel` | object | `dropdownlist` | All Channels / Luminance Only | Where gamma is applied |
 
 - **All Channels:** gamma is applied to B, G and R separately.
@@ -87,3 +87,7 @@ python tests/test_local.py
 ## Image Credits
 
 - `images/dark.jpg`: OpenCV sample `building.jpg`, artificially darkened to simulate low light.
+
+## Platform Note
+
+In the 2-image executor, connect each input to its own source node. Connecting one output to both inputs of the same node does not work, because the platform maps connections by output name.

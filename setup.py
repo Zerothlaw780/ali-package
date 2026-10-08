@@ -5,7 +5,7 @@ setuptools.setup(
     version="0.0.1",
     author="DigiNova",
     author_email='info@diginova.com.tr',
-    description="Image enhancement and change detection package",
+    description="Gamma correction for one or two images",
     url='https://github.com/novavision-ai/package',
     license='MIT',
     install_requires=['sdk', 'opencv-python-headless'],
