@@ -104,6 +104,11 @@ class SecondExecutorOutputs(Outputs):
 # ============ FIRST EXECUTOR CONFIGS (gamma, 1 image) ============
 
 class FirstBrightenGamma(Config):
+    """
+    Gamma value used to brighten the image (0.1 - 1.0).
+    Lower values brighten dark areas more strongly; 1.0 leaves the image unchanged.
+    Each pixel is mapped as: output = 255 * (input / 255) ^ gamma.
+    """
     name: Literal["GammaBrighten"] = "GammaBrighten"
     value: float = Field(ge=0.1, le=1.0)
     type: Literal["number"] = "number"
@@ -111,6 +116,9 @@ class FirstBrightenGamma(Config):
 
     class Config:
         title = "Gamma (0.1 - 1.0)"
+        json_schema_extra = {
+            "shortDescription": "Brighten strength"
+        }
 
 
 class FirstBrightenChannelAll(Config):
@@ -134,6 +142,11 @@ class FirstBrightenChannelLuminance(Config):
 
 
 class FirstBrightenChannel(Config):
+    """
+    Choose which part of the image the gamma correction is applied to:
+    - All Channels: applied to the B, G and R channels separately; colors may shift slightly.
+    - Luminance Only: applied only to the lightness (L) channel in LAB color space; colors are preserved.
+    """
     name: Literal["Channel"] = "Channel"
     value: Union[FirstBrightenChannelAll, FirstBrightenChannelLuminance]
     type: Literal["object"] = "object"
@@ -141,6 +154,9 @@ class FirstBrightenChannel(Config):
 
     class Config:
         title = "Channel"
+        json_schema_extra = {
+            "shortDescription": "Target channel"
+        }
 
 
 class FirstBrighten(Config):
@@ -154,6 +170,11 @@ class FirstBrighten(Config):
         title = "Brighten"
 
 class FirstDarkenGamma(Config):
+    """
+    Gamma value used to darken the image (1.0 - 5.0).
+    Higher values darken bright areas more strongly; 1.0 leaves the image unchanged.
+    Each pixel is mapped as: output = 255 * (input / 255) ^ gamma.
+    """
     name: Literal["GammaDarken"] = "GammaDarken"
     value: float = Field(ge=1.0, le=5.0)
     type: Literal["number"] = "number"
@@ -161,6 +182,9 @@ class FirstDarkenGamma(Config):
 
     class Config:
         title = "Gamma (1.0 - 5.0)"
+        json_schema_extra = {
+            "shortDescription": "Darken strength"
+        }
 
 
 class FirstDarkenChannelAll(Config):
@@ -184,6 +208,11 @@ class FirstDarkenChannelLuminance(Config):
 
 
 class FirstDarkenChannel(Config):
+    """
+    Choose which part of the image the gamma correction is applied to:
+    - All Channels: applied to the B, G and R channels separately; colors may shift slightly.
+    - Luminance Only: applied only to the lightness (L) channel in LAB color space; colors are preserved.
+    """
     name: Literal["Channel"] = "Channel"
     value: Union[FirstDarkenChannelAll, FirstDarkenChannelLuminance]
     type: Literal["object"] = "object"
@@ -191,6 +220,9 @@ class FirstDarkenChannel(Config):
 
     class Config:
         title = "Channel"
+        json_schema_extra = {
+            "shortDescription": "Target channel"
+        }
 
 
 class FirstDarken(Config):
@@ -204,6 +236,11 @@ class FirstDarken(Config):
         title = "Darken"
 
 class FirstExecutorGammaMode(Config):
+    """
+    Choose the direction of the gamma correction:
+    - Brighten: lifts dark areas, gamma between 0.1 and 1.0.
+    - Darken: deepens bright areas, gamma between 1.0 and 5.0.
+    """
     name: Literal["GammaMode"] = "GammaMode"
     value: Union[FirstBrighten, FirstDarken]
     type: Literal["object"] = "object"
@@ -211,6 +248,9 @@ class FirstExecutorGammaMode(Config):
 
     class Config:
         title = "Gamma Mode"
+        json_schema_extra = {
+            "shortDescription": "Brighten or darken"
+        }
 
 
 class FirstExecutorConfigs(Configs):
@@ -249,6 +289,11 @@ class FirstExecutor(Config):
 # ============ SECOND EXECUTOR CONFIGS (gamma, 2 images) ============
 
 class SecondBrightenGamma(Config):
+    """
+    Gamma value used to brighten the image (0.1 - 1.0).
+    Lower values brighten dark areas more strongly; 1.0 leaves the image unchanged.
+    Each pixel is mapped as: output = 255 * (input / 255) ^ gamma.
+    """
     name: Literal["GammaBrighten"] = "GammaBrighten"
     value: float = Field(ge=0.1, le=1.0)
     type: Literal["number"] = "number"
@@ -256,6 +301,9 @@ class SecondBrightenGamma(Config):
 
     class Config:
         title = "Gamma (0.1 - 1.0)"
+        json_schema_extra = {
+            "shortDescription": "Brighten strength"
+        }
 
 
 class SecondBrightenChannelAll(Config):
@@ -279,6 +327,11 @@ class SecondBrightenChannelLuminance(Config):
 
 
 class SecondBrightenChannel(Config):
+    """
+    Choose which part of the image the gamma correction is applied to:
+    - All Channels: applied to the B, G and R channels separately; colors may shift slightly.
+    - Luminance Only: applied only to the lightness (L) channel in LAB color space; colors are preserved.
+    """
     name: Literal["Channel"] = "Channel"
     value: Union[SecondBrightenChannelAll, SecondBrightenChannelLuminance]
     type: Literal["object"] = "object"
@@ -286,6 +339,9 @@ class SecondBrightenChannel(Config):
 
     class Config:
         title = "Channel"
+        json_schema_extra = {
+            "shortDescription": "Target channel"
+        }
 
 
 class SecondBrighten(Config):
@@ -299,6 +355,11 @@ class SecondBrighten(Config):
         title = "Brighten"
 
 class SecondDarkenGamma(Config):
+    """
+    Gamma value used to darken the image (1.0 - 5.0).
+    Higher values darken bright areas more strongly; 1.0 leaves the image unchanged.
+    Each pixel is mapped as: output = 255 * (input / 255) ^ gamma.
+    """
     name: Literal["GammaDarken"] = "GammaDarken"
     value: float = Field(ge=1.0, le=5.0)
     type: Literal["number"] = "number"
@@ -306,6 +367,9 @@ class SecondDarkenGamma(Config):
 
     class Config:
         title = "Gamma (1.0 - 5.0)"
+        json_schema_extra = {
+            "shortDescription": "Darken strength"
+        }
 
 
 class SecondDarkenChannelAll(Config):
@@ -329,6 +393,11 @@ class SecondDarkenChannelLuminance(Config):
 
 
 class SecondDarkenChannel(Config):
+    """
+    Choose which part of the image the gamma correction is applied to:
+    - All Channels: applied to the B, G and R channels separately; colors may shift slightly.
+    - Luminance Only: applied only to the lightness (L) channel in LAB color space; colors are preserved.
+    """
     name: Literal["Channel"] = "Channel"
     value: Union[SecondDarkenChannelAll, SecondDarkenChannelLuminance]
     type: Literal["object"] = "object"
@@ -336,6 +405,9 @@ class SecondDarkenChannel(Config):
 
     class Config:
         title = "Channel"
+        json_schema_extra = {
+            "shortDescription": "Target channel"
+        }
 
 
 class SecondDarken(Config):
@@ -349,6 +421,11 @@ class SecondDarken(Config):
         title = "Darken"
 
 class SecondExecutorGammaMode(Config):
+    """
+    Choose the direction of the gamma correction:
+    - Brighten: lifts dark areas, gamma between 0.1 and 1.0.
+    - Darken: deepens bright areas, gamma between 1.0 and 5.0.
+    """
     name: Literal["GammaMode"] = "GammaMode"
     value: Union[SecondBrighten, SecondDarken]
     type: Literal["object"] = "object"
@@ -356,6 +433,9 @@ class SecondExecutorGammaMode(Config):
 
     class Config:
         title = "Gamma Mode"
+        json_schema_extra = {
+            "shortDescription": "Brighten or darken"
+        }
 
 
 class SecondExecutorConfigs(Configs):
@@ -394,6 +474,12 @@ class SecondExecutor(Config):
 # ============ PACKAGE ============
 
 class ConfigExecutor(Config):
+    """
+    Choose the task:
+    - Gamma Correction (1 Image): applies gamma correction to one input image.
+    - Gamma Correction (2 Images): applies the same settings to two input images.
+      Connect each input to its own source node.
+    """
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
     value: Union[FirstExecutor, SecondExecutor]
     type: Literal["executor"] = "executor"
@@ -402,6 +488,9 @@ class ConfigExecutor(Config):
 
     class Config:
         title = "Task"
+        json_schema_extra = {
+            "shortDescription": "Number of images to process"
+        }
 
 
 class PackageConfigs(Configs):
